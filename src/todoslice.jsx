@@ -1,26 +1,38 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const todos = createSlice({
-  name: "Todo",
-  initialState: [],
+const initialState = {
+  value: 0,
+};
+export const asyncounter = createAsyncThunk("counter/async", async () => {
+  return new Promise((resolve) => {
+    try {
+      setTimeout(() => {
+        console.log("Button Clicked");
+        resolve();
+      }, 1000);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+});
+
+const counter = createSlice({
+  name: "counter",
+  initialState: initialState,
   reducers: {
-    addtodo: (state, action) => {
-      state.push({ id: Date.now(), text: action.payload });
+    increment: (state) => {
+      state.value += 1;
     },
-    delettodo: (state, action) => {
-      return state.filter((item) => item.id !== action.payload);
+    decrement: (state) => {
+      state.value > 0 ? (state.value -= 1) : (state.value = 0);
     },
-    edittodo: (state, action) => {
-      const { id, newtext } = action.payload;
-      const todo = state.find((item) => item.id === id);
-
-      if (todo) {
-        todo.text = newtext;
-      }
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(asyncounter.fulfilled, (state, action) => {
+      state.value += 1;
+    });
   },
 });
 
-export const { addtodo, delettodo,edittodo } = todos.actions;
-
-export default todos.reducer;
+export const { increment, decrement, async } = counter.actions;
+export default counter.reducer;

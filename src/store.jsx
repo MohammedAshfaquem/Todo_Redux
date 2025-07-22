@@ -1,9 +1,10 @@
-import {configureStore} from "@reduxjs/toolkit"
-import todos from './todoslice'
+import { applyMiddleware, configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./todoslice";
+import {thunk} from 'redux-thunk'
 const store = configureStore({
-  reducer:{
-    todo:todos
-  }
-})
-
+  reducer: {
+    counter: counterReducer,
+  },
+  
+});
 export default store;
